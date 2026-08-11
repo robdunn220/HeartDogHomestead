@@ -1,0 +1,105 @@
+<div class="page section confirm">
+  @if (loading()) {
+    <p class="muted center">Confirming your order…</p>
+  } @else if (order(); as placed) {
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 48 48" width="56" height="56">
+        <circle cx="24" cy="24" r="22" fill="var(--success-soft)" />
+        <path
+          d="M15 24.5l6.5 6.5L33 19"
+          fill="none"
+          stroke="var(--success)"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+
+    <h1 class="center">
+      @if (placed.status === 'paid') {
+        Thank you — your seeds are on the way
+      } @else {
+        We have your order
+      }
+    </h1>
+
+    <p class="lede center center-block">
+      Order <strong>{{ placed.reference }}</strong> is confirmed. A receipt is headed to
+      {{ placed.email }}.
+    </p>
+
+    @if (simulated()) {
+      <div class="alert alert-note center-block">
+        <strong>Test mode.</strong> No payment keys are configured on this site, so this order was
+        recorded without charging a card. Add a Stripe secret key to take real payments.
+      </div>
+    }
+
+    @if (placed.status !== 'paid') {
+      <div class="alert alert-note center-block">
+        Payment is still settling. This page will show it as paid once the processor confirms —
+        refresh in a moment.
+      </div>
+    }
+
+    <section class="receipt panel">
+      <h2>What you ordered</h2>
+
+      <ul class="items">
+        @for (item of placed.items; track item.slug) {
+          <li>
+            <span class="item-name">
+              <a [routerLink]="['/shop', item.slug]">{{ item.name }}</a>
+              <span class="muted small">× {{ item.quantity }}</span>
+            </span>
+            <span class="money">{{ money(item.unitPriceCents * item.quantity) }}</span>
+          </li>
+        }
+      </ul>
+
+      <dl class="totals">
+        <div>
+          <dt>Subtotal</dt>
+          <dd class="money">{{ money(placed.subtotalCents) }}</dd>
+        </div>
+        <div>
+          <dt>Shipping</dt>
+          <dd class="money">
+            {{ placed.shippingCents === 0 ? 'Free' : money(placed.shippingCents) }}
+          </dd>
+        </div>
+        <div class="grand">
+          <dt>Total</dt>
+          <dd class="money">{{ money(placed.totalCents) }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <div class="actions">
+      <a class="btn" routerLink="/shop">Keep shopping</a>
+      @if (auth.isSignedIn()) {
+        <a class="btn btn-secondary" routerLink="/account">View your orders</a>
+      } @else {
+        <a class="btn btn-secondary" routerLink="/register"> Create an account to track orders </a>
+      }
+    </div>
+
+    <p class="small muted center keep-note">
+      Hold onto that reference number — it is how we find your order if you write to us.
+    </p>
+  } @else {
+    <h1 class="center">We could not find that order</h1>
+    <p class="lede center center-block">
+      @if (reference()) {
+        Nothing here matches reference <strong>{{ reference() }}</strong
+        >. If you were charged, send us that number and we will sort it out.
+      } @else {
+        This page needs an order reference to show you anything.
+      }
+    </p>
+    <div class="actions">
+      <a class="btn" routerLink="/shop">Back to the catalog</a>
+    </div>
+  }
+</div>

@@ -1,0 +1,114 @@
+<section class="donate-hero">
+  <div class="page">
+    <p class="eyebrow">Give back</p>
+    <h1>The homestead is named after a dog.</h1>
+    <p class="lede">
+      Heart Dog Homestead got its name from one very good dog who spent every planting season
+      supervising from the end of a row. She came from a shelter. So we point everyone who comes
+      through here toward the people still doing that work.
+    </p>
+  </div>
+</section>
+
+<div class="page section donate-body">
+  <div class="donate-grid">
+    <article class="charity-card panel">
+      <div class="charity-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="40" height="40">
+          <path
+            d="M24 40S8 30 8 19a8 8 0 0 1 16-4 8 8 0 0 1 16 4c0 11-16 21-16 21Z"
+            fill="var(--terracotta)"
+            fill-opacity="0.2"
+            stroke="var(--terracotta)"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+
+      <h2>{{ charity().name }}</h2>
+      <p class="tagline">{{ charity().tagline }}</p>
+
+      <a
+        class="btn btn-lg btn-accent"
+        [href]="charity().donateUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Donate at {{ displayHost() }}
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path
+            d="M7 17L17 7M9 7h8v8"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </a>
+
+      <p class="small muted disclaimer">
+        This link takes you to {{ charity().name }} directly. Your donation goes to them, not to us
+        — we never touch the money and we take nothing out of it. They handle their own receipts, so
+        any tax documentation comes from them.
+        @if (charity().ein) {
+          Their EIN is {{ charity().ein }}.
+        }
+      </p>
+    </article>
+
+    <div class="ways stack">
+      <h2>Other ways to help</h2>
+
+      <article class="way">
+        <h3>Money is the flexible one</h3>
+        <p class="muted">
+          Shelters can stretch a dollar further than almost anyone. A donation covers whatever is
+          actually short that week — vaccines, a surgery, a heat pump in July — rather than another
+          bag of the wrong food.
+        </p>
+      </article>
+
+      <article class="way">
+        <h3>Foster if you have a spare room</h3>
+        <p class="muted">
+          Foster homes are the real bottleneck. Every dog in a spare bedroom is a kennel freed for
+          the next one, and dogs show their true personality in a house in a way they never do in a
+          run.
+        </p>
+      </article>
+
+      <article class="way">
+        <h3>Volunteer an afternoon</h3>
+        <p class="muted">
+          Walking, laundry, transport runs, photographing dogs so their listings do not look like
+          mugshots. Unglamorous, and it is what keeps the doors open.
+        </p>
+      </article>
+
+      <article class="way">
+        <h3>Grow something and share it</h3>
+        <p class="muted">
+          Plenty of shelters run fundraiser plant sales in spring. A flat of seedlings started from
+          a packet of our zinnias costs you a windowsill and turns into real money for them.
+        </p>
+      </article>
+    </div>
+  </div>
+
+  <section class="closing panel">
+    <h2>Where our part ends</h2>
+    <p>
+      We are a seed company, not a charity, and we want to be straight about the difference. We do
+      not collect donations, add a round-up at checkout, or claim that a portion of your purchase
+      goes anywhere but back into growing seed. What we do is put the link above in front of every
+      person who visits, because that costs you nothing and it works.
+    </p>
+    <p class="small muted">
+      Want us to feature a different rescue? Tell us about the one you support — we rotate who is
+      listed here.
+    </p>
+    <a class="btn btn-secondary" routerLink="/shop">Back to the catalog</a>
+  </section>
+</div>

@@ -1,1 +1,474 @@
-/* You can add global styles to this file, and also import other style files */
+/**
+ * Heart Dog Homestead — global design system.
+ *
+ * The look borrows from old seed catalogs: warm paper, botanical green, a
+ * terracotta accent, and a serif for anything that wants to feel printed.
+ *
+ * Body type is system stacks, so text paints with nothing to download. The one
+ * exception is the script below, used only for the brand name.
+ */
+
+/**
+ * Allura, self-hosted, latin subset only (26 KB). Chosen to sit close to the
+ * hand-lettered script in the logo — same delicate hairlines and long swashes.
+ *
+ * SIL Open Font License 1.1; the license ships alongside it at
+ * public/fonts/allura-OFL.txt as the OFL requires.
+ *
+ * `swap` means the name renders immediately in the fallback and switches when
+ * the font lands, rather than leaving a hole in the header.
+ */
+@font-face {
+  font-family: 'Allura';
+  src: url('/fonts/allura-latin-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+2122;
+}
+
+:root {
+  /* Paper and ink */
+  --paper: #faf6ee;
+  --paper-raised: #ffffff;
+  --paper-sunk: #f2ebdd;
+  --ink: #2a2620;
+  --ink-soft: #5c5449;
+  --ink-faint: #8b8175;
+  --rule: #e2d8c5;
+
+  /* Garden palette */
+  --green: #3d6b4a;
+  --green-deep: #2b4d35;
+  --green-soft: #e8f0e7;
+  /* Text accents are darkened until they clear 4.5:1 on both --paper and
+     --paper-sunk; the eyebrow labels that use them are small and bold, which
+     WCAG still counts as body text. */
+  --terracotta: #a94f35;
+  --terracotta-soft: #fbeae4;
+  --gold: #c9992e;
+  --gold-soft: #fbf2dc;
+
+  /* Sampled from the logo's watercolor wash, so anything sitting next to the
+     dog is drawn from the same family rather than competing with it. */
+  --rose: #a4406a;
+  --rose-mid: #c8688e;
+  --rose-soft: #fbe9f0;
+
+  /* Feedback */
+  --danger: #a33224;
+  --danger-soft: #fbe9e6;
+  --success: #2f6b47;
+  --success-soft: #e6f2ea;
+
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 20px;
+
+  --shadow-sm: 0 1px 2px rgb(42 38 32 / 0.06), 0 2px 6px rgb(42 38 32 / 0.05);
+  --shadow: 0 2px 6px rgb(42 38 32 / 0.07), 0 12px 28px rgb(42 38 32 / 0.08);
+  --shadow-lg: 0 4px 12px rgb(42 38 32 / 0.09), 0 24px 56px rgb(42 38 32 / 0.12);
+
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Brand name only. The italic serif fallback keeps the shape close while
+     Allura loads, so the swap is not a jolt. */
+  --font-script: 'Allura', 'Snell Roundhand', 'Apple Chancery', 'Segoe Script', cursive;
+
+  --measure: 68ch;
+  --page-max: 1180px;
+  --header-height: 68px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #17150f;
+    --paper-raised: #211e17;
+    --paper-sunk: #100e0a;
+    --ink: #f0e9dc;
+    --ink-soft: #bdb3a2;
+    --ink-faint: #8b8175;
+    --rule: #35301f;
+
+    --green: #7fb08b;
+    --green-deep: #a6cbaf;
+    --green-soft: #1e2a20;
+    --terracotta: #e08a6a;
+    --terracotta-soft: #2e1d16;
+    --gold: #e0b84f;
+    --gold-soft: #2a2213;
+
+    --rose: #e58aad;
+    --rose-mid: #d4749b;
+    --rose-soft: #2b1720;
+
+    --danger: #e08a7c;
+    --danger-soft: #2e1a16;
+    --success: #7fb08b;
+    --success-soft: #1a2a1f;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow: 0 2px 6px rgb(0 0 0 / 0.4), 0 12px 28px rgb(0 0 0 / 0.35);
+    --shadow-lg: 0 4px 12px rgb(0 0 0 / 0.45), 0 24px 56px rgb(0 0 0 / 0.5);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+}
+h2 {
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.15rem);
+}
+h3 {
+  font-size: 1.25rem;
+}
+
+p {
+  margin: 0 0 1em;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--green);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+a:hover {
+  color: var(--green-deep);
+}
+
+img,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+/* ---------- Layout ---------- */
+
+.page {
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+.section {
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.stack > * + * {
+  margin-top: 1rem;
+}
+
+.lede {
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+  max-width: var(--measure);
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  margin: 0 0 0.75rem;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  --btn-bg: var(--green);
+  --btn-fg: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+  color: var(--btn-fg);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  border-color: var(--rule);
+  box-shadow: none;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--paper-sunk);
+  border-color: var(--ink-faint);
+}
+
+.btn-accent {
+  --btn-bg: var(--terracotta);
+  --btn-fg: #fff;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-lg {
+  padding: 0.9rem 1.9rem;
+  font-size: 1.03rem;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+.link-quiet {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+.link-quiet:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+/* ---------- Cards & surfaces ---------- */
+
+.card {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.panel {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: var(--shadow-sm);
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--green-soft);
+  color: var(--green-deep);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.tag-gold {
+  background: var(--gold-soft);
+  color: #7a5c12;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tag-gold {
+    color: var(--gold);
+  }
+}
+
+/* ---------- Forms ---------- */
+
+.field {
+  display: block;
+  margin-bottom: 1.1rem;
+}
+
+.field > label,
+.field-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  margin-bottom: 0.35rem;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='search'],
+input[type='number'],
+select,
+textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.98rem;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 22%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.field-hint {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  margin-top: 0.3rem;
+}
+
+/* ---------- Messages ---------- */
+
+.alert {
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-size: 0.92rem;
+  margin-bottom: 1rem;
+}
+
+.alert-error {
+  background: var(--danger-soft);
+  border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+  color: var(--danger);
+}
+
+.alert-success {
+  background: var(--success-soft);
+  border-color: color-mix(in srgb, var(--success) 35%, transparent);
+  color: var(--success);
+}
+
+.alert-note {
+  background: var(--gold-soft);
+  border-color: color-mix(in srgb, var(--gold) 40%, transparent);
+  color: var(--ink);
+}
+
+/* ---------- Utilities ---------- */
+
+.muted {
+  color: var(--ink-soft);
+}
+
+.small {
+  font-size: 0.87rem;
+}
+
+.center {
+  text-align: center;
+}
+
+.money {
+  font-variant-numeric: tabular-nums;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--green);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 var(--radius-sm) 0;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 1.5rem 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

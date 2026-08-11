@@ -1,0 +1,130 @@
+@if (loading()) {
+  <div class="page section">
+    <p class="muted">Loading…</p>
+  </div>
+} @else if (notFound()) {
+  <div class="page section center">
+    <h1>We do not carry that one</h1>
+    <p class="lede center-block">
+      That variety is not in our catalog. It may have sold out for the season, or the link may be
+      off by a letter.
+    </p>
+    <a class="btn" routerLink="/shop">Back to the catalog</a>
+  </div>
+} @else if (product(); as item) {
+  <div class="page section">
+    <nav class="crumbs small" aria-label="Breadcrumb">
+      <a routerLink="/shop">Catalog</a>
+      <span aria-hidden="true">/</span>
+      <a routerLink="/shop" [queryParams]="{ category: item.category }">{{ item.category }}</a>
+      <span aria-hidden="true">/</span>
+      <span class="muted">{{ item.name }}</span>
+    </nav>
+
+    <div class="detail">
+      <div class="art-frame">
+        <app-packet-art [motif]="item.motif" [accent]="item.accent" [name]="item.name" />
+      </div>
+
+      <div class="detail-body">
+        <p class="eyebrow">{{ item.category }}</p>
+        <h1>{{ item.name }}</h1>
+        @if (item.botanicalName) {
+          <p class="botanical">{{ item.botanicalName }}</p>
+        }
+
+        <p class="lede">{{ item.blurb }}</p>
+
+        <div class="buy panel">
+          <div class="buy-top">
+            <span class="price money">{{ price() }}</span>
+            <span class="small muted">{{ item.seedCount }}</span>
+          </div>
+
+          @if (soldOut()) {
+            <p class="alert alert-note">
+              Sold out for this season. We restock as the next harvest is cleaned and tested.
+            </p>
+          } @else {
+            @if (item.stock <= 12) {
+              <p class="stock-note small">Only {{ item.stock }} packets left.</p>
+            }
+
+            <div class="quantity">
+              <span class="field-label" id="qty-label">Quantity</span>
+              <div class="stepper">
+                <button
+                  type="button"
+                  (click)="step(-1)"
+                  [disabled]="quantity() <= 1"
+                  aria-label="Decrease quantity"
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  min="1"
+                  max="99"
+                  aria-labelledby="qty-label"
+                  [value]="quantity()"
+                  (input)="setQuantity($event)"
+                />
+                <button
+                  type="button"
+                  (click)="step(1)"
+                  [disabled]="quantity() >= 99"
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <button class="btn btn-lg btn-block" type="button" (click)="addToCart()">
+              {{ added() ? 'Added to cart ✓' : 'Add to cart' }}
+            </button>
+
+            @if (inCart() > 0) {
+              <p class="small muted in-cart">
+                {{ inCart() }} already in your <a routerLink="/cart">cart</a>.
+              </p>
+            }
+          }
+        </div>
+
+        <div class="prose">
+          <p>{{ item.description }}</p>
+          @if (item.originNote) {
+            <p class="origin">
+              <strong>Where it comes from.</strong>
+              {{ item.originNote }}
+            </p>
+          }
+        </div>
+
+        @if (facts().length) {
+          <h2 class="facts-heading">Growing details</h2>
+          <dl class="facts">
+            @for (fact of facts(); track fact.label) {
+              <div class="fact">
+                <dt>{{ fact.label }}</dt>
+                <dd>{{ fact.value }}</dd>
+              </div>
+            }
+          </dl>
+        }
+      </div>
+    </div>
+
+    @if (related().length) {
+      <section class="related">
+        <h2>More from {{ item.category }}</h2>
+        <div class="grid">
+          @for (other of related(); track other.slug) {
+            <app-product-card [product]="other" />
+          }
+        </div>
+      </section>
+    }
+  </div>
+}

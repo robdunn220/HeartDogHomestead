@@ -1,0 +1,51 @@
+<div class="page section auth-page">
+  <div class="auth-card panel">
+    <p class="eyebrow">Welcome back</p>
+    <h1>Sign in</h1>
+    <p class="muted">
+      Signing in keeps your order history in one place. You can always check out as a guest instead.
+    </p>
+
+    @if (error()) {
+      <div class="alert alert-error" role="alert">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="submit()">
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input
+          id="login-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+        />
+      </div>
+
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input
+          id="login-password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+        />
+      </div>
+
+      <button class="btn btn-lg btn-block" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Signing in…' : 'Sign in' }}
+      </button>
+    </form>
+
+    <hr class="divider" />
+
+    <p class="small muted center switch">
+      No account yet? <a routerLink="/register">Create one</a> — it takes a moment.
+    </p>
+  </div>
+</div>

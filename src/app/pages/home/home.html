@@ -1,0 +1,152 @@
+<section class="hero">
+  <div class="page hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow">Open-pollinated · Untreated · Hand-packed</p>
+      <h1>Seeds worth saving, from a garden that keeps them going.</h1>
+      <p class="lede">
+        Every variety we sell is open-pollinated, which means the seed you save this fall grows the
+        same plant next spring. No hybrids, no treatments, no patents — just the kinds of
+        vegetables, herbs and flowers people have been handing across fences for generations.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-lg" routerLink="/shop">Browse the catalog</a>
+        <a class="btn btn-lg btn-secondary" routerLink="/donate">Why we give back</a>
+      </div>
+      <p class="hero-note small muted">
+        Free shipping on orders over
+        {{ configStore.config().freeShippingThresholdCents / 100 | currency: 'USD' }}. Packed the
+        day it ships.
+      </p>
+    </div>
+
+    <div class="hero-art">
+      <!--
+        The one place the full lockup runs large enough to read. The dark
+        variant swaps in the same artwork with the script lifted to cream,
+        since the original's black script disappears on a dark background.
+        Eager, high priority: this is the largest thing above the fold.
+      -->
+      <picture class="hero-logo">
+        <source srcset="logo-dark.webp" type="image/webp" media="(prefers-color-scheme: dark)" />
+        <source srcset="logo-dark.png" media="(prefers-color-scheme: dark)" />
+        <source srcset="logo.webp" type="image/webp" />
+        <img
+          src="logo.png"
+          alt="Heart Dog Homestead"
+          width="720"
+          height="911"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
+    </div>
+  </div>
+</section>
+
+<section class="section page">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">This season</p>
+      <h2>What we are handing out at the gate</h2>
+    </div>
+    <a class="btn btn-secondary btn-sm" routerLink="/shop">See all seeds</a>
+  </div>
+
+  @if (loading()) {
+    <div class="grid">
+      @for (placeholder of [1, 2, 3, 4, 5, 6]; track placeholder) {
+        <div class="card skeleton" aria-hidden="true"></div>
+      }
+    </div>
+    <p class="visually-hidden">Loading the catalog…</p>
+  } @else if (featured().length === 0) {
+    <p class="muted">The catalog is empty right now. Check back shortly.</p>
+  } @else {
+    <div class="grid">
+      @for (product of featured(); track product.slug) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+  }
+</section>
+
+<section class="section values">
+  <div class="page">
+    <p class="eyebrow center">What you can count on</p>
+    <h2 class="center">Three promises, kept every packet</h2>
+
+    <div class="value-grid">
+      <article class="value card">
+        <div class="value-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26">
+            <path
+              d="M12 21c0-7 3-11 7-13-1 7-3 11-7 13Zm0 0c0-7-3-11-7-13 1 7 3 11 7 13Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <h3>It comes back true</h3>
+        <p class="small muted">
+          Open-pollinated and heirloom only. Save seed from what you grow and next year's plants
+          will look and taste like this year's. That is the whole point.
+        </p>
+      </article>
+
+      <article class="value card">
+        <div class="value-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26">
+            <path
+              d="M4 13c4-1 7-4 8-9 3 3 4 6 4 9m-12 0h16m-16 0c0 4 3 7 8 7s8-3 8-7"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <h3>Grown, not just resold</h3>
+        <p class="small muted">
+          We grow out and germination-test what we sell. If a variety does not make our own
+          standard, it does not go in an envelope with our name on it.
+        </p>
+      </article>
+
+      <article class="value card">
+        <div class="value-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26">
+            <path
+              d="M12 20s-7-4.5-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5c0 5-7 9.5-7 9.5Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <h3>Named for a good dog</h3>
+        <p class="small muted">
+          The homestead is named after one. So we point every visitor toward
+          {{ configStore.config().charity.name }} — because the next one is waiting on somebody.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section page">
+  <div class="charity-banner">
+    <div>
+      <p class="eyebrow">Give back</p>
+      <h2>{{ configStore.config().charity.name }}</h2>
+      <p class="lede">{{ configStore.config().charity.tagline }}</p>
+      <p class="small muted">
+        Donations go directly to them. We never handle the money and we take nothing out of it.
+      </p>
+    </div>
+    <a class="btn btn-lg btn-accent" routerLink="/donate">How to help</a>
+  </div>
+</section>

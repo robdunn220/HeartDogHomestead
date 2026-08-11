@@ -1,0 +1,156 @@
+<div class="page section">
+  <h1>Your cart</h1>
+
+  @if (canceled()) {
+    <div class="alert alert-note">
+      Checkout was canceled and nothing was charged. Your cart is exactly as you left it.
+    </div>
+  }
+
+  @if (cart.isEmpty()) {
+    <div class="empty panel center">
+      <h2>Nothing in here yet</h2>
+      <p class="muted">
+        The catalog is full of things that want planting. Start with the grower's picks.
+      </p>
+      <a class="btn btn-lg" routerLink="/shop">Browse the catalog</a>
+    </div>
+  } @else {
+    <div class="cart-layout">
+      <section class="lines" aria-label="Items in your cart">
+        @if (cart.quoteError()) {
+          <div class="alert alert-error">{{ cart.quoteError() }}</div>
+        }
+
+        @if (quote(); as priced) {
+          @for (line of priced.lines; track line.slug) {
+            <article class="line card">
+              <div class="line-main">
+                <h3 class="line-name">
+                  <a [routerLink]="['/shop', line.slug]">{{ line.name }}</a>
+                </h3>
+                <p class="small muted line-unit">{{ money(line.unitPriceCents) }} each</p>
+              </div>
+
+              <div class="line-qty">
+                <label class="visually-hidden" [attr.for]="'qty-' + line.slug">
+                  Quantity of {{ line.name }}
+                </label>
+                <input
+                  [id]="'qty-' + line.slug"
+                  type="number"
+                  min="1"
+                  max="99"
+                  [value]="line.quantity"
+                  (change)="setQuantity(line.slug, $event)"
+                />
+              </div>
+
+              <div class="line-total money">{{ money(line.lineTotalCents) }}</div>
+
+              <button
+                class="line-remove"
+                type="button"
+                (click)="cart.remove(line.slug)"
+                [attr.aria-label]="'Remove ' + line.name + ' from your cart'"
+              >
+                Remove
+              </button>
+            </article>
+          }
+        } @else if (cart.quoting()) {
+          <p class="muted">Pricing your cart…</p>
+        }
+
+        <div class="lines-foot">
+          <a class="link-quiet small" routerLink="/shop">← Keep shopping</a>
+          <button class="link-quiet small clear" type="button" (click)="cart.clear()">
+            Empty cart
+          </button>
+        </div>
+      </section>
+
+      <aside class="summary panel" aria-label="Order summary">
+        <h2>Summary</h2>
+
+        @if (quote(); as priced) {
+          <dl class="totals">
+            <div>
+              <dt>Subtotal</dt>
+              <dd class="money">{{ money(priced.subtotalCents) }}</dd>
+            </div>
+            <div>
+              <dt>Shipping</dt>
+              <dd class="money">
+                {{ priced.shippingCents === 0 ? 'Free' : money(priced.shippingCents) }}
+              </dd>
+            </div>
+            <div class="grand">
+              <dt>Total</dt>
+              <dd class="money">{{ money(priced.totalCents) }}</dd>
+            </div>
+          </dl>
+
+          @if (freeShippingGap() > 0) {
+            <p class="small muted ship-note">
+              Add {{ money(freeShippingGap()) }} more for free shipping.
+            </p>
+          }
+        } @else {
+          <p class="muted small">Pricing your cart…</p>
+        }
+
+        <hr class="divider" />
+
+        @if (auth.isSignedIn()) {
+          <p class="small muted">
+            Ordering as <strong>{{ auth.user()?.email }}</strong
+            >. Your order will show up under <a routerLink="/account">your account</a>.
+          </p>
+        } @else {
+          <div class="field">
+            <label for="checkout-email">Email for your receipt</label>
+            <input
+              id="checkout-email"
+              type="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              [ngModel]="email()"
+              (ngModelChange)="email.set($event)"
+              name="email"
+            />
+            <p class="field-hint">
+              Checking out as a guest.
+              <a routerLink="/login" [queryParams]="{ redirect: '/cart' }">Sign in</a>
+              to keep your order history.
+            </p>
+          </div>
+        }
+
+        @if (error()) {
+          <div class="alert alert-error">{{ error() }}</div>
+        }
+
+        <button
+          class="btn btn-lg btn-block"
+          type="button"
+          [disabled]="!canCheckout()"
+          (click)="checkout()"
+        >
+          {{ submitting() ? 'Starting checkout…' : 'Checkout' }}
+        </button>
+
+        @if (configStore.config().paymentsEnabled) {
+          <p class="small muted pay-note">
+            You will finish on Stripe's secure payment page. We never see your card number.
+          </p>
+        } @else {
+          <p class="small pay-note test-mode">
+            Test mode: no payment keys are configured, so checkout is simulated and no card is
+            charged.
+          </p>
+        }
+      </aside>
+    </div>
+  }
+</div>

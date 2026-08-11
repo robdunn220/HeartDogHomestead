@@ -1,0 +1,222 @@
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+  color: var(--ink-faint);
+}
+
+.crumbs a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.crumbs a:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.center-block {
+  margin-inline: auto;
+  margin-bottom: 1.5rem;
+}
+
+.detail {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+.art-frame {
+  position: sticky;
+  top: calc(var(--header-height) + 1.5rem);
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--paper-sunk);
+  box-shadow: var(--shadow-sm);
+}
+
+.art-frame app-packet-art {
+  height: 100%;
+}
+
+.detail-body h1 {
+  margin-bottom: 0.2em;
+}
+
+.botanical {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--ink-faint);
+  margin-bottom: 1rem;
+}
+
+/* ---------- Buy box ---------- */
+
+.buy {
+  margin-block: 1.5rem;
+}
+
+.buy-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.price {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.stock-note {
+  color: var(--terracotta);
+  font-weight: 600;
+  margin-bottom: 0.85rem;
+}
+
+.quantity {
+  margin-bottom: 1rem;
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--paper-raised);
+}
+
+.stepper button {
+  width: 2.6rem;
+  height: 2.6rem;
+  border: none;
+  background: none;
+  color: var(--ink);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.stepper button:hover:not(:disabled) {
+  background: var(--paper-sunk);
+}
+
+.stepper button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.stepper input {
+  width: 3.4rem;
+  border: none;
+  border-inline: 1px solid var(--rule);
+  border-radius: 0;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  padding-inline: 0;
+  background: none;
+}
+
+.stepper input:focus-visible {
+  box-shadow: none;
+  background: var(--paper-sunk);
+}
+
+/* Hide the native number spinners; the buttons do that job. */
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.stepper input {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.in-cart {
+  margin: 0.75rem 0 0;
+  text-align: center;
+}
+
+/* ---------- Prose & facts ---------- */
+
+.prose {
+  max-width: var(--measure);
+  margin-bottom: 2rem;
+}
+
+.origin {
+  padding-left: 1rem;
+  border-left: 3px solid var(--green-soft);
+  color: var(--ink-soft);
+}
+
+.facts-heading {
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0;
+  margin: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.fact {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper-raised);
+}
+
+.fact dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.2rem;
+}
+
+.fact dd {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+/* ---------- Related ---------- */
+
+.related {
+  margin-top: clamp(3rem, 7vw, 5rem);
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.6rem);
+}
+
+@media (max-width: 860px) {
+  .detail {
+    grid-template-columns: 1fr;
+  }
+
+  .art-frame {
+    position: static;
+    max-width: 340px;
+    margin-inline: auto;
+  }
+}

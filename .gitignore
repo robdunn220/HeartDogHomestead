@@ -42,3 +42,11 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Secrets — never commit real Stripe keys
+.env
+.env.local
+.env.*.local
+
+# SQLite database and its write-ahead log
+/data

@@ -4,25 +4,25 @@ import {
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
-import express from 'express';
+import express, { type NextFunction, type Request, type Response } from 'express';
 import { join } from 'node:path';
+
+import { apiRouter } from './server/api';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
+// Behind a reverse proxy (nginx, Fly, Render) this makes `secure` cookies and
+// req.protocol reflect the original request rather than the proxy hop.
+app.set('trust proxy', 1);
+
 /**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
+ * Storefront API: catalog, accounts, cart pricing, checkout, and orders.
+ * Registered before the Angular handler so /api/* never falls through to SSR.
  */
+app.use('/api', apiRouter);
 
 /**
  * Serve static files from /browser
@@ -41,10 +41,16 @@ app.use(
 app.use((req, res, next) => {
   angularApp
     .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
+    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
     .catch(next);
+});
+
+/** Last-resort error handler so a thrown route never hangs the request. */
+app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  console.error('Unhandled server error:', error);
+  if (!res.headersSent) {
+    res.status(500).json({ error: 'Something went wrong on our end.' });
+  }
 });
 
 /**

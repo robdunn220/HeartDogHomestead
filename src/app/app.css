@@ -1,0 +1,292 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+main:focus {
+  outline: none;
+}
+
+/* ---------- Header ---------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: var(--header-height);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-decoration: none;
+  color: var(--ink);
+  margin-right: auto;
+}
+
+.brand-mark {
+  display: block;
+  flex: none;
+}
+
+.brand-mark img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  /* The watercolor edge is soft; a hair of scale keeps it from looking timid. */
+  transition: transform 0.18s ease;
+}
+
+.brand:hover .brand-mark img {
+  transform: scale(1.05);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-name {
+  font-family: var(--font-script);
+  /* Allura runs small for its point size and its swashes need headroom, so it
+     is set larger than the old serif with leading pulled back in. */
+  font-size: 1.85rem;
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  /* Keeps the descender on the "g" from being clipped by the header edge. */
+  padding-bottom: 0.06em;
+}
+
+.brand-sub {
+  /* The logo sets HOMESTEAD in light, widely tracked caps — matched here with
+     the system sans rather than a second download. */
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  /* Picks up the logo it sits beside rather than the terracotta accent. */
+  color: var(--rose);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.nav a,
+.nav-button {
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 0.94rem;
+  font-weight: 550;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.nav a:hover,
+.nav-button:hover {
+  background: var(--paper-sunk);
+  color: var(--ink);
+}
+
+.nav a.active {
+  color: var(--green-deep);
+  background: var(--green-soft);
+}
+
+.cart-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 0.35rem;
+  border: 1px solid var(--rule) !important;
+}
+
+.cart-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--terracotta);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.menu-toggle {
+  display: none;
+  padding: 0.4rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--paper-raised);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* The tracked caps line runs ~200px wide; on the narrowest phones that plus the
+   mark and the menu button would overflow, so tighten both a step. */
+@media (max-width: 420px) {
+  .brand-name {
+    font-size: 1.55rem;
+  }
+
+  .brand-sub {
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+  }
+
+  .brand-mark img {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 800px) {
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  .nav {
+    position: absolute;
+    inset: var(--header-height) 0 auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.15rem;
+    padding: 0.75rem clamp(1rem, 4vw, 2.5rem) 1.25rem;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    box-shadow: var(--shadow);
+    display: none;
+  }
+
+  .nav-open {
+    display: flex;
+  }
+
+  .nav a,
+  .nav-button {
+    text-align: left;
+    padding: 0.7rem 0.9rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .cart-link {
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  margin-top: clamp(3rem, 8vw, 6rem);
+  border-top: 1px solid var(--rule);
+  background: var(--paper-sunk);
+  padding-block: clamp(2rem, 5vw, 3.5rem) 1.5rem;
+}
+
+.footer-inner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+.footer-logo {
+  display: block;
+  margin-bottom: 0.9rem;
+}
+
+.footer-logo img {
+  width: auto;
+  height: 128px;
+  object-fit: contain;
+}
+
+.footer-brand p {
+  max-width: 34ch;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.footer-links h4 {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 0.3rem;
+}
+
+.footer-links a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 0.92rem;
+}
+
+.footer-links a:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.footer-links p {
+  margin: 0;
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: clamp(1.5rem, 4vw, 2.5rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
+.footer-flag {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: var(--gold-soft);
+  color: var(--ink);
+  font-weight: 600;
+}

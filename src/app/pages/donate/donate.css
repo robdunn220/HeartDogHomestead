@@ -1,0 +1,92 @@
+.donate-hero {
+  background:
+    radial-gradient(ellipse at 20% 0%, var(--terracotta-soft), transparent 60%), var(--paper-sunk);
+  border-bottom: 1px solid var(--rule);
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.donate-hero .lede {
+  max-width: 62ch;
+}
+
+.donate-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+}
+
+/* ---------- Charity card ---------- */
+
+.charity-card {
+  position: sticky;
+  top: calc(var(--header-height) + 1.5rem);
+  border-color: color-mix(in srgb, var(--terracotta) 30%, var(--rule));
+  background: var(--terracotta-soft);
+}
+
+.charity-mark {
+  margin-bottom: 0.75rem;
+}
+
+.charity-card h2 {
+  margin-bottom: 0.25rem;
+}
+
+.tagline {
+  font-family: var(--font-serif);
+  font-size: 1.12rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin-bottom: 1.5rem;
+}
+
+.disclaimer {
+  margin: 1.25rem 0 0;
+}
+
+/* ---------- Other ways ---------- */
+
+.ways h2 {
+  margin-bottom: 1.25rem;
+}
+
+.way {
+  padding-left: 1.1rem;
+  border-left: 3px solid var(--green-soft);
+}
+
+.way + .way {
+  margin-top: 1.5rem;
+}
+
+.way h3 {
+  font-size: 1.08rem;
+  margin-bottom: 0.3rem;
+}
+
+.way p {
+  margin-bottom: 0;
+  max-width: 56ch;
+}
+
+/* ---------- Closing ---------- */
+
+.closing {
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  max-width: var(--measure);
+}
+
+.closing h2 {
+  font-size: 1.3rem;
+}
+
+@media (max-width: 880px) {
+  .donate-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .charity-card {
+    position: static;
+  }
+}

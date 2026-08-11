@@ -1,0 +1,67 @@
+<div class="page section">
+  <header class="account-head">
+    <div>
+      <p class="eyebrow">Your account</p>
+      <h1>{{ auth.user()?.name }}</h1>
+      <p class="muted">{{ auth.user()?.email }}</p>
+    </div>
+    <button class="btn btn-secondary" type="button" (click)="signOut()">Sign out</button>
+  </header>
+
+  <h2 class="orders-heading">Order history</h2>
+
+  @if (loading()) {
+    <p class="muted">Loading your orders…</p>
+  } @else if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  } @else if (orders().length === 0) {
+    <div class="empty panel center">
+      <h3>No orders yet</h3>
+      <p class="muted">When you order seed, it will show up here with everything you picked.</p>
+      <a class="btn" routerLink="/shop">Browse the catalog</a>
+    </div>
+  } @else {
+    <div class="orders">
+      @for (order of orders(); track order.reference) {
+        <article class="order card">
+          <header class="order-head">
+            <div>
+              <h3 class="reference">{{ order.reference }}</h3>
+              <p class="small muted order-date">
+                {{ order.createdAt | date: 'mediumDate' }}
+                · {{ itemCount(order) }} {{ itemCount(order) === 1 ? 'packet' : 'packets' }}
+              </p>
+            </div>
+
+            <div class="order-meta">
+              <span
+                class="status"
+                [class.status-paid]="order.status === 'paid'"
+                [class.status-pending]="order.status !== 'paid'"
+              >
+                {{ order.status === 'paid' ? 'Paid' : 'Pending' }}
+              </span>
+              <span class="order-total money">{{ money(order.totalCents) }}</span>
+            </div>
+          </header>
+
+          <ul class="order-items">
+            @for (item of order.items; track item.slug) {
+              <li>
+                <a [routerLink]="['/shop', item.slug]">{{ item.name }}</a>
+                <span class="muted small">× {{ item.quantity }}</span>
+                <span class="money item-total">
+                  {{ money(item.unitPriceCents * item.quantity) }}
+                </span>
+              </li>
+            }
+          </ul>
+
+          @if (order.paidAt) {
+            <p class="small muted paid-line">Paid {{ order.paidAt | date: 'medium' }}</p>
+          }
+        </article>
+      }
+    </div>
+  }
+</div>

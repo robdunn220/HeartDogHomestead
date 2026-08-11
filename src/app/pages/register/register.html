@@ -1,0 +1,68 @@
+<div class="page section auth-page">
+  <div class="auth-card panel">
+    <p class="eyebrow">Join us</p>
+    <h1>Create an account</h1>
+    <p class="muted">
+      An account keeps your orders together so you can look up what you planted two seasons ago.
+    </p>
+
+    @if (error()) {
+      <div class="alert alert-error" role="alert">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="submit()">
+      <div class="field">
+        <label for="register-name">Name</label>
+        <input
+          id="register-name"
+          name="name"
+          type="text"
+          autocomplete="name"
+          required
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event)"
+        />
+      </div>
+
+      <div class="field">
+        <label for="register-email">Email</label>
+        <input
+          id="register-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+        />
+      </div>
+
+      <div class="field">
+        <label for="register-password">Password</label>
+        <input
+          id="register-password"
+          name="password"
+          type="password"
+          autocomplete="new-password"
+          [attr.minlength]="minLength"
+          required
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+        />
+        <p class="field-hint" [class.hint-warn]="passwordTooShort()">
+          At least {{ minLength }} characters.
+        </p>
+      </div>
+
+      <button class="btn btn-lg btn-block" type="submit" [disabled]="!canSubmit()">
+        {{ submitting() ? 'Creating your account…' : 'Create account' }}
+      </button>
+    </form>
+
+    <hr class="divider" />
+
+    <p class="small muted center switch">
+      Already have an account? <a routerLink="/login">Sign in</a>.
+    </p>
+  </div>
+</div>
