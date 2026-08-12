@@ -23,6 +23,10 @@
   margin: 0;
 }
 
+.forgot {
+  margin: 1rem 0 0;
+}
+
 .hint-warn {
   color: var(--terracotta);
   font-weight: 600;

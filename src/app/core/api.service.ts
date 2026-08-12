@@ -79,6 +79,29 @@ export class ApiService {
     return this.http.get<{ user: User | null }>(this.url('/auth/me'), { withCredentials: true });
   }
 
+  forgotPassword(email: string): Observable<{ ok: boolean }> {
+    return this.http.post<{ ok: boolean }>(this.url('/auth/forgot-password'), { email });
+  }
+
+  resetPassword(token: string, password: string): Observable<{ ok: boolean }> {
+    return this.http.post<{ ok: boolean }>(this.url('/auth/reset-password'), { token, password });
+  }
+
+  updateProfile(body: { name: string; email: string }): Observable<{ user: User }> {
+    return this.http.patch<{ user: User }>(this.url('/auth/profile'), body, {
+      withCredentials: true,
+    });
+  }
+
+  changePassword(body: {
+    currentPassword: string;
+    newPassword: string;
+  }): Observable<{ ok: boolean }> {
+    return this.http.post<{ ok: boolean }>(this.url('/auth/change-password'), body, {
+      withCredentials: true,
+    });
+  }
+
   quote(items: CartLine[]): Observable<{ cart: PricedCart }> {
     return this.http.post<{ cart: PricedCart }>(this.url('/checkout/quote'), { items });
   }

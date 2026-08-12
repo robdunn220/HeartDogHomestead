@@ -34,6 +34,25 @@ export const FREE_SHIPPING_THRESHOLD_CENTS = Number(env['FREE_SHIPPING_THRESHOLD
 /** Sessions last this long before the user must sign in again. */
 export const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30;
 
+/** A password-reset link is good for this long before it must be requested anew. */
+export const PASSWORD_RESET_TTL_MS = 1000 * 60 * 60;
+
+/**
+ * Outgoing email over SMTP. With no SMTP_HOST configured, EMAIL_ENABLED is
+ * false and the mailer logs messages to the console instead of sending them —
+ * so registration, password resets, and receipts are all testable with no
+ * setup. Fill these in (any provider: Fastmail, Gmail, Mailgun, SendGrid, …)
+ * to send for real.
+ */
+export const SMTP_HOST = env['SMTP_HOST'] || '';
+export const SMTP_PORT = Number(env['SMTP_PORT'] ?? 587);
+export const SMTP_SECURE = env['SMTP_SECURE'] === 'true';
+export const SMTP_USER = env['SMTP_USER'] || '';
+export const SMTP_PASS = env['SMTP_PASS'] || '';
+export const MAIL_FROM = env['MAIL_FROM'] || 'Heart Dog Homestead <hello@heartdoghomestead.com>';
+
+export const EMAIL_ENABLED = SMTP_HOST.length > 0;
+
 export const IS_PRODUCTION = env['NODE_ENV'] === 'production';
 
 /**

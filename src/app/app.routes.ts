@@ -45,6 +45,18 @@ export const routes: Routes = [
     title: 'Create an Account — Heart Dog Homestead',
   },
   {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./pages/forgot-password/forgot-password').then((m) => m.ForgotPassword),
+    title: 'Reset Your Password — Heart Dog Homestead',
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./pages/reset-password/reset-password').then((m) => m.ResetPassword),
+    title: 'Choose a New Password — Heart Dog Homestead',
+  },
+  {
     path: 'account',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/account/account').then((m) => m.Account),

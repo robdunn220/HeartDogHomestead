@@ -24,6 +24,9 @@ export class Login {
   /** Where the guard wanted to send them before they were bounced here. */
   private readonly redirect = this.route.snapshot.queryParamMap.get('redirect') ?? '/account';
 
+  /** Set when arriving from a completed password reset, to show a confirmation. */
+  protected readonly justReset = signal(this.route.snapshot.queryParamMap.get('reset') === '1');
+
   protected async submit(): Promise<void> {
     if (this.submitting()) return;
 

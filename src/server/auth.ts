@@ -12,8 +12,8 @@ import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
 import type { Request, Response, NextFunction } from 'express';
 
-import { db, pruneExpiredSessions } from './db';
-import { IS_PRODUCTION, SESSION_TTL_MS } from './config';
+import { db, pruneExpiredResets, pruneExpiredSessions } from './db';
+import { IS_PRODUCTION, PASSWORD_RESET_TTL_MS, SESSION_TTL_MS } from './config';
 
 const scryptAsync = promisify(scrypt) as (
   password: string,
@@ -63,6 +63,42 @@ export function createSession(userId: number): string {
 
 export function destroySession(token: string): void {
   db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
+}
+
+/** Signs a user out everywhere — used after a password change or reset. */
+export function destroyUserSessions(userId: number): void {
+  db.prepare('DELETE FROM sessions WHERE user_id = ?').run(userId);
+}
+
+/**
+ * Issues a single-use password-reset token for a user. The raw token goes in
+ * the emailed link; only its row here can mark it spent, so a link works once.
+ */
+export function createPasswordReset(userId: number): string {
+  pruneExpiredResets();
+  const token = randomBytes(32).toString('base64url');
+  db.prepare(
+    'INSERT INTO password_resets (token, user_id, expires_at) VALUES (?, ?, ?)',
+  ).run(token, userId, Date.now() + PASSWORD_RESET_TTL_MS);
+  return token;
+}
+
+/**
+ * Validates a reset token and, if it is unexpired and unused, marks it spent
+ * and returns the user it belongs to. Returns null for anything else, so a
+ * caller cannot tell a bad token from an expired or already-used one.
+ */
+export function consumePasswordReset(token: string): number | null {
+  if (!token) return null;
+
+  const row = db
+    .prepare('SELECT user_id, expires_at, used_at FROM password_resets WHERE token = ?')
+    .get(token) as { user_id: number; expires_at: number; used_at: string | null } | undefined;
+
+  if (!row || row.used_at || row.expires_at < Date.now()) return null;
+
+  db.prepare("UPDATE password_resets SET used_at = datetime('now') WHERE token = ?").run(token);
+  return row.user_id;
 }
 
 export function setSessionCookie(res: Response, token: string): void {

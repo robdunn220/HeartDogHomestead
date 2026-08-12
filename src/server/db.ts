@@ -39,6 +39,15 @@ db.exec(`
   );
   CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
 
+  CREATE TABLE IF NOT EXISTS password_resets (
+    token      TEXT PRIMARY KEY,
+    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    expires_at INTEGER NOT NULL,
+    used_at    TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_password_resets_user ON password_resets(user_id);
+
   CREATE TABLE IF NOT EXISTS products (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     slug              TEXT NOT NULL UNIQUE,
@@ -128,4 +137,11 @@ function seedProductsIfEmpty(): void {
 /** Drop expired sessions. Called opportunistically on each auth lookup. */
 export function pruneExpiredSessions(): void {
   db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
+}
+
+/** Drop expired or already-used reset tokens. Called when one is requested. */
+export function pruneExpiredResets(): void {
+  db.prepare('DELETE FROM password_resets WHERE expires_at < ? OR used_at IS NOT NULL').run(
+    Date.now(),
+  );
 }

@@ -17,6 +17,30 @@
   margin: 0;
 }
 
+.settings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.settings-card {
+  padding: 1.5rem 1.6rem;
+}
+
+.settings-card h2 {
+  font-size: 1.15rem;
+  margin-bottom: 0.2rem;
+}
+
+.settings-card > .muted {
+  margin-bottom: 1.25rem;
+}
+
+.settings-card .btn {
+  margin-top: 0.25rem;
+}
+
 .orders-heading {
   font-size: 1.3rem;
   margin-bottom: 1.25rem;

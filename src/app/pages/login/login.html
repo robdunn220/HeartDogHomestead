@@ -6,6 +6,12 @@
       Signing in keeps your order history in one place. You can always check out as a guest instead.
     </p>
 
+    @if (justReset()) {
+      <div class="alert alert-success" role="status">
+        Your password has been reset. Sign in with your new password.
+      </div>
+    }
+
     @if (error()) {
       <div class="alert alert-error" role="alert">{{ error() }}</div>
     }
@@ -41,6 +47,10 @@
         {{ submitting() ? 'Signing in…' : 'Sign in' }}
       </button>
     </form>
+
+    <p class="small center forgot">
+      <a routerLink="/forgot-password">Forgot your password?</a>
+    </p>
 
     <hr class="divider" />
 

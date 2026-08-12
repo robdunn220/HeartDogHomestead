@@ -10,6 +10,8 @@ import { randomBytes } from 'node:crypto';
 
 import { db } from './db';
 import { CURRENCY, FREE_SHIPPING_THRESHOLD_CENTS, SHIPPING_CENTS } from './config';
+import { sendMail } from './mail';
+import { orderConfirmationEmail } from './email-templates';
 
 export interface CartLine {
   slug: string;
@@ -189,10 +191,24 @@ export function markOrderPaid(orderId: number): boolean {
     for (const item of items) decrement.run(item.quantity, item.product_id);
 
     db.exec('COMMIT');
+
+    // First time this order became paid: send the receipt. Fire-and-forget and
+    // after the commit, so a mail failure can never roll back a paid order.
+    sendOrderConfirmation(orderId);
     return true;
   } catch (error) {
     db.exec('ROLLBACK');
     throw error;
+  }
+}
+
+/** Loads a paid order and emails its confirmation. Never throws. */
+function sendOrderConfirmation(orderId: number): void {
+  try {
+    const row = db.prepare('SELECT * FROM orders WHERE id = ?').get(orderId) as OrderRow | undefined;
+    if (row) void sendMail(orderConfirmationEmail(toOrderDto(row)));
+  } catch (error) {
+    console.error(`Could not send order confirmation for order ${orderId}:`, error);
   }
 }
 

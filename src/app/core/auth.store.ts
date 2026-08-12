@@ -73,6 +73,23 @@ export class AuthStore {
     }
   }
 
+  async updateProfile(name: string, email: string): Promise<void> {
+    try {
+      const { user } = await firstValueFrom(this.api.updateProfile({ name, email }));
+      this.userSignal.set(user);
+    } catch (error) {
+      throw new Error(apiErrorMessage(error, 'We could not save your changes.'));
+    }
+  }
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    try {
+      await firstValueFrom(this.api.changePassword({ currentPassword, newPassword }));
+    } catch (error) {
+      throw new Error(apiErrorMessage(error, 'We could not change your password.'));
+    }
+  }
+
   async logout(): Promise<void> {
     try {
       await firstValueFrom(this.api.logout());
