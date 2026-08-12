@@ -1,17 +1,18 @@
 # Render Blueprint — https://render.com/docs/blueprint-spec
 # Deploy: Render dashboard → New → Blueprint → pick this repo.
 #
-# Builds the Dockerfile, runs it as a Web Service with a persistent disk for the
-# SQLite database, and wires in the environment. Secret values (the Postmark
-# token) are marked sync:false, so Render prompts for them instead of reading
-# them from this file — they never live in git.
+# Runs as a native Node service (Node 24, required by node:sqlite) that builds
+# the Angular SSR bundle and starts the PRODUCTION server — never `ng serve`.
+# A persistent disk holds the SQLite database. The Postmark token is entered in
+# the dashboard (sync:false), never committed.
 services:
   - type: web
     name: heartdog-homestead
-    runtime: docker
-    dockerfilePath: ./Dockerfile
+    runtime: node
     plan: starter
     region: oregon
+    buildCommand: npm ci && npm run build
+    startCommand: npm run serve:ssr
     healthCheckPath: /api/config
     autoDeploy: true
 
@@ -22,12 +23,14 @@ services:
       sizeGB: 1
 
     envVars:
+      - key: NODE_VERSION
+        value: "24"
       - key: NODE_ENV
         value: production
-      # Public origin — used for password-reset links and Secure cookies.
-      # Update if the real domain differs.
+      # Canonical public origin (www). Used for password-reset links and
+      # Secure cookies. Must match the primary custom domain in Render.
       - key: SITE_URL
-        value: https://heartdoghomestead.com
+        value: https://www.heartdoghomestead.com
       - key: DATABASE_PATH
         value: /data/heartdog.db
 
