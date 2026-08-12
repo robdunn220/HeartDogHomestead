@@ -9,6 +9,7 @@
     "test": "ng test",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "format": "prettier --write \"src/**/*.{ts,html,css}\"",
+    "email:test": "node --env-file=.env scripts/email-test.mjs",
     "serve:ssr": "node --env-file-if-exists=.env dist/heartdog-homestead/server/server.mjs",
     "serve:ssr:heartdog-homestead": "node --env-file-if-exists=.env dist/heartdog-homestead/server/server.mjs"
   },
