@@ -1,18 +1,16 @@
 # Render Blueprint — https://render.com/docs/blueprint-spec
 # Deploy: Render dashboard → New → Blueprint → pick this repo.
 #
-# Runs as a native Node service (Node 24, required by node:sqlite) that builds
-# the Angular SSR bundle and starts the PRODUCTION server — never `ng serve`.
-# A persistent disk holds the SQLite database. The Postmark token is entered in
-# the dashboard (sync:false), never committed.
+# Builds the Dockerfile (Node 24, required by node:sqlite) and runs the
+# PRODUCTION SSR server with a persistent disk for the SQLite database. The
+# Postmark token is entered in the dashboard (sync:false), never committed.
 services:
   - type: web
     name: heartdog-homestead
-    runtime: node
+    runtime: docker
+    dockerfilePath: ./Dockerfile
     plan: starter
     region: oregon
-    buildCommand: npm ci && npm run build
-    startCommand: npm run serve:ssr
     healthCheckPath: /api/config
     autoDeploy: true
 
@@ -23,8 +21,6 @@ services:
       sizeGB: 1
 
     envVars:
-      - key: NODE_VERSION
-        value: "24"
       - key: NODE_ENV
         value: production
       # Canonical public origin (www). Used for password-reset links and
@@ -33,6 +29,15 @@ services:
         value: https://www.heartdoghomestead.com
       - key: DATABASE_PATH
         value: /data/heartdog.db
+
+      # @angular/ssr rejects requests whose Host header isn't allowlisted.
+      # These hosts are also baked into angular.json; this is belt-and-braces
+      # and lets you add hosts without a rebuild.
+      - key: NG_ALLOWED_HOSTS
+        value: heartdoghomestead.com,www.heartdoghomestead.com
+      # Trust Render's X-Forwarded-* headers so host/proto are read correctly.
+      - key: NG_TRUST_PROXY_HEADERS
+        value: "true"
 
       # Email (Postmark over SMTP)
       - key: SMTP_HOST
