@@ -1,0 +1,53 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploy: Render dashboard → New → Blueprint → pick this repo.
+#
+# Builds the Dockerfile, runs it as a Web Service with a persistent disk for the
+# SQLite database, and wires in the environment. Secret values (the Postmark
+# token) are marked sync:false, so Render prompts for them instead of reading
+# them from this file — they never live in git.
+services:
+  - type: web
+    name: heartdog-homestead
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    region: oregon
+    healthCheckPath: /api/config
+    autoDeploy: true
+
+    # Persistent storage for the SQLite file. DATABASE_PATH points here.
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Public origin — used for password-reset links and Secure cookies.
+      # Update if the real domain differs.
+      - key: SITE_URL
+        value: https://heartdoghomestead.com
+      - key: DATABASE_PATH
+        value: /data/heartdog.db
+
+      # Email (Postmark over SMTP)
+      - key: SMTP_HOST
+        value: smtp.postmarkapp.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_SECURE
+        value: "false"
+      - key: MAIL_FROM
+        value: Heart Dog Homestead <mdunn@heartdoghomestead.com>
+      # Postmark Server API token — entered in the dashboard, not committed.
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+
+      # Payments stay simulated until these are filled in (no code change).
+      # - key: STRIPE_SECRET_KEY
+      #     sync: false
+      # - key: STRIPE_WEBHOOK_SECRET
+      #     sync: false

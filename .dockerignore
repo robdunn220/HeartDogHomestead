@@ -1,0 +1,24 @@
+# Keep the build context small and never ship secrets or local state.
+node_modules
+dist
+.angular
+.git
+.gitignore
+
+# Local database + write-ahead log (production uses the mounted /data volume).
+data
+
+# Secrets — provided as env vars in the host dashboard, never baked into image.
+.env
+.env.local
+.env.*.local
+
+# Editor / OS cruft
+.vscode
+.idea
+.DS_Store
+*.log
+npm-debug.log
+
+# Docs and CI that the image doesn't need
+README.md
