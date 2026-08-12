@@ -32,12 +32,10 @@ services:
 
       # @angular/ssr rejects requests whose Host header isn't allowlisted.
       # These hosts are also baked into angular.json; this is belt-and-braces
-      # and lets you add hosts without a rebuild.
+      # and lets you add hosts without a rebuild. (Render forwards the real
+      # Host header, so no proxy-header trust config is needed here.)
       - key: NG_ALLOWED_HOSTS
         value: heartdoghomestead.com,www.heartdoghomestead.com
-      # Trust Render's X-Forwarded-* headers so host/proto are read correctly.
-      - key: NG_TRUST_PROXY_HEADERS
-        value: "true"
 
       # Email (Postmark over SMTP)
       - key: SMTP_HOST
