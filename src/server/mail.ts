@@ -35,8 +35,11 @@ let transporter: Transporter | null = null;
 
 async function getTransport(): Promise<Transporter> {
   if (!transporter) {
-    const { createTransport } = await import('nodemailer');
-    transporter = createTransport({
+    // nodemailer is CommonJS; when the server is bundled its exports live on
+    // `.default`, so import the default and read createTransport off it (the
+    // same interop dance as stripe.ts).
+    const { default: nodemailer } = await import('nodemailer');
+    transporter = nodemailer.createTransport({
       host: SMTP_HOST,
       port: SMTP_PORT,
       secure: SMTP_SECURE,
