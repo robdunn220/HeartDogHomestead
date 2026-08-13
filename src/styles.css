@@ -28,32 +28,30 @@
 }
 
 :root {
-  /* Paper and ink */
-  --paper: #faf6ee;
+  /* Paper and ink — white paper, forest-tinted ink */
+  --paper: #ffffff;
   --paper-raised: #ffffff;
-  --paper-sunk: #f2ebdd;
-  --ink: #2a2620;
-  --ink-soft: #5c5449;
-  --ink-faint: #8b8175;
-  --rule: #e2d8c5;
+  --paper-sunk: #fdf2f7;
+  --ink: #21302a;
+  --ink-soft: #51605a;
+  --ink-faint: #8b938d;
+  --rule: #eddbe5;
 
-  /* Garden palette */
-  --green: #3d6b4a;
-  --green-deep: #2b4d35;
-  --green-soft: #e8f0e7;
-  /* Text accents are darkened until they clear 4.5:1 on both --paper and
-     --paper-sunk; the eyebrow labels that use them are small and bold, which
-     WCAG still counts as body text. */
-  --terracotta: #a94f35;
-  --terracotta-soft: #fbeae4;
-  --gold: #c9992e;
-  --gold-soft: #fbf2dc;
+  /* Forest-green palette (primary brand: buttons, links, brand mark) */
+  --green: #2f5d3b;
+  --green-deep: #1f4029;
+  --green-soft: #e6f0e9;
+  /* Accents retoned to pink so eyebrows/labels stay in the pink+green family.
+     Text accents are kept dark enough to clear 4.5:1 on --paper/--paper-sunk. */
+  --terracotta: #b93d70;
+  --terracotta-soft: #fbe7f1;
+  --gold: #c24d84;
+  --gold-soft: #fce9f2;
 
-  /* Sampled from the logo's watercolor wash, so anything sitting next to the
-     dog is drawn from the same family rather than competing with it. */
-  --rose: #a4406a;
-  --rose-mid: #c8688e;
-  --rose-soft: #fbe9f0;
+  /* Pink — the secondary accent, drawn from the logo's watercolor wash. */
+  --rose: #c23f76;
+  --rose-mid: #d76b98;
+  --rose-soft: #fce8f1;
 
   /* Feedback */
   --danger: #a33224;
@@ -82,24 +80,24 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #17150f;
-    --paper-raised: #211e17;
-    --paper-sunk: #100e0a;
-    --ink: #f0e9dc;
-    --ink-soft: #bdb3a2;
-    --ink-faint: #8b8175;
-    --rule: #35301f;
+    --paper: #121814;
+    --paper-raised: #1b231d;
+    --paper-sunk: #0e1310;
+    --ink: #edf3ee;
+    --ink-soft: #b6c2ba;
+    --ink-faint: #86928a;
+    --rule: #2a3a30;
 
-    --green: #7fb08b;
-    --green-deep: #a6cbaf;
-    --green-soft: #1e2a20;
-    --terracotta: #e08a6a;
-    --terracotta-soft: #2e1d16;
-    --gold: #e0b84f;
-    --gold-soft: #2a2213;
+    --green: #7fc394;
+    --green-deep: #a9d9b8;
+    --green-soft: #16241b;
+    --terracotta: #ef8fb5;
+    --terracotta-soft: #2c1620;
+    --gold: #ef8fb5;
+    --gold-soft: #2c1620;
 
-    --rose: #e58aad;
-    --rose-mid: #d4749b;
+    --rose: #f08cb3;
+    --rose-mid: #e070a0;
     --rose-soft: #2b1720;
 
     --danger: #e08a7c;
