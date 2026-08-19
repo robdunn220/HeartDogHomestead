@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  HostListener,
+  inject,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -53,6 +60,18 @@ export class Cart {
       this.effectiveEmail().includes('@') &&
       !this.submitting(),
   );
+
+  /**
+   * Coming back via the browser's back button (e.g. from Stripe) restores this
+   * page from the back-forward cache with all state intact — including
+   * `submitting`, which leaves the checkout button stuck on "Starting
+   * checkout…". `pageshow` fires on that restore (and on every load), so reset
+   * it here to hand the button back.
+   */
+  @HostListener('window:pageshow')
+  protected onPageShow(): void {
+    this.submitting.set(false);
+  }
 
   protected money(cents: number): string {
     return formatMoney(cents);
