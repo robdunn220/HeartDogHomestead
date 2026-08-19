@@ -282,8 +282,12 @@ function toOrderDto(row: OrderRow): OrderDto {
 }
 
 export function listOrdersForUser(userId: number): OrderDto[] {
+  // Only orders that actually went through. A pending row is created before the
+  // Stripe redirect, so abandoned/canceled checkouts leave 'pending' rows that
+  // should never appear in a customer's history. The success page looks orders
+  // up by reference (findOrderByReference), so it still sees one mid-transition.
   const rows = db
-    .prepare('SELECT * FROM orders WHERE user_id = ? ORDER BY id DESC')
+    .prepare("SELECT * FROM orders WHERE user_id = ? AND status != 'pending' ORDER BY id DESC")
     .all(userId) as unknown as OrderRow[];
   return rows.map(toOrderDto);
 }

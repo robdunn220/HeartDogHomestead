@@ -74,9 +74,9 @@ export class Cart {
         this.api.createCheckoutSession(this.cart.lines(), this.effectiveEmail()),
       );
 
-      // The cart has become an order at this point, so let it go before we
-      // leave the page — a back button press should not re-add everything.
-      this.cart.clear();
+      // Keep the cart until the order actually completes — the success page
+      // clears it. If the customer cancels on Stripe and comes back, their
+      // cart is still here.
 
       // Stripe's hosted page lives on another origin, so this is a full
       // navigation rather than a router hop.

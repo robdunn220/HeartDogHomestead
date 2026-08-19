@@ -34,8 +34,8 @@ export class CheckoutSuccess {
     this.reference.set(reference);
     this.simulated.set(params.get('simulated') === '1');
 
-    // Clearing here as well as at checkout covers the case where the customer
-    // paid from a second tab or came back to this URL later.
+    // Stripe only redirects here on a completed payment, so the cart has truly
+    // become an order now — this is the single place a real checkout clears it.
     this.cart.clear();
 
     void this.resolve(reference, sessionId);
