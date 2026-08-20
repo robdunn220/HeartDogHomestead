@@ -222,19 +222,33 @@ export interface OrderDto {
   currency: string;
   createdAt: string;
   paidAt: string | null;
-  items: { name: string; slug: string; unitPriceCents: number; quantity: number }[];
+  items: {
+    name: string;
+    slug: string;
+    unitPriceCents: number;
+    quantity: number;
+    category: string;
+  }[];
 }
 
 function loadItems(orderId: number) {
+  // Join the catalog for each line's category so the order history can filter
+  // by seed type. LEFT JOIN + COALESCE keeps the line even if the product row
+  // is ever removed.
   return db
     .prepare(
-      'SELECT name, slug, unit_price_cents, quantity FROM order_items WHERE order_id = ? ORDER BY id',
+      `SELECT oi.name, oi.slug, oi.unit_price_cents, oi.quantity,
+              COALESCE(p.category, '') AS category
+       FROM order_items oi
+       LEFT JOIN products p ON p.id = oi.product_id
+       WHERE oi.order_id = ? ORDER BY oi.id`,
     )
     .all(orderId) as {
     name: string;
     slug: string;
     unit_price_cents: number;
     quantity: number;
+    category: string;
   }[];
 }
 
@@ -277,6 +291,7 @@ function toOrderDto(row: OrderRow): OrderDto {
       slug: item.slug,
       unitPriceCents: item.unit_price_cents,
       quantity: item.quantity,
+      category: item.category,
     })),
   };
 }

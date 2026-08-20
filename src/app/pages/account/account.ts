@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  HostListener,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -26,15 +33,40 @@ export class Account {
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
 
-  // Order-history search — filtered client-side, since a customer's own orders
-  // are already loaded in full (reference, items, dates, totals).
+  // Order-history search + filters — all applied client-side, since a
+  // customer's own orders are already loaded in full.
   protected readonly orderSearch = signal('');
+  protected readonly filterOpen = signal(false);
+  protected readonly categoryFilter = signal('all');
+  /** 'any' | '30d' | '3m' | 'year' | 'custom' */
+  protected readonly datePreset = signal('any');
+  protected readonly dateFrom = signal('');
+  protected readonly dateTo = signal('');
+
+  /** Distinct seed types present across this customer's orders, for the menu. */
+  protected readonly availableCategories = computed(() => {
+    const set = new Set<string>();
+    for (const order of this.orders()) {
+      for (const item of order.items) {
+        if (item.category) set.add(item.category);
+      }
+    }
+    return [...set].sort();
+  });
+
+  /** How many filters are active — drives the badge on the Filter button. */
+  protected readonly activeFilterCount = computed(
+    () => (this.categoryFilter() !== 'all' ? 1 : 0) + (this.datePreset() !== 'any' ? 1 : 0),
+  );
 
   protected readonly filteredOrders = computed(() => {
     const term = this.orderSearch().trim().toLowerCase();
-    const orders = this.orders();
-    if (!term) return orders;
-    return orders.filter((order) => this.orderHaystack(order).includes(term));
+    return this.orders().filter(
+      (order) =>
+        (term === '' || this.orderHaystack(order).includes(term)) &&
+        this.matchesCategory(order) &&
+        this.matchesDate(order),
+    );
   });
 
   // Profile form. Seeded from the user the guard has already resolved.
@@ -116,11 +148,61 @@ export class Account {
       order.reference,
       order.status,
       formatMoney(order.totalCents),
-      ...order.items.map((item) => item.name),
+      ...order.items.map((item) => `${item.name} ${item.category}`),
       ...dates,
     ]
       .join(' ')
       .toLowerCase();
+  }
+
+  private matchesCategory(order: Order): boolean {
+    const cat = this.categoryFilter();
+    return cat === 'all' || order.items.some((item) => item.category === cat);
+  }
+
+  private matchesDate(order: Order): boolean {
+    const preset = this.datePreset();
+    if (preset === 'any') return true;
+
+    const created = new Date(order.createdAt);
+    if (preset === 'custom') {
+      const from = this.dateFrom();
+      const to = this.dateTo();
+      if (from && created < new Date(`${from}T00:00:00`)) return false;
+      if (to && created > new Date(`${to}T23:59:59`)) return false;
+      return true;
+    }
+
+    const now = new Date();
+    if (preset === 'year') return created.getFullYear() === now.getFullYear();
+    const days = preset === '30d' ? 30 : 90;
+    return created >= new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+  }
+
+  protected toggleFilter(): void {
+    this.filterOpen.update((open) => !open);
+  }
+
+  protected clearFilters(): void {
+    this.categoryFilter.set('all');
+    this.datePreset.set('any');
+    this.dateFrom.set('');
+    this.dateTo.set('');
+  }
+
+  /** Clears the search box and every filter at once. */
+  protected resetOrderView(): void {
+    this.orderSearch.set('');
+    this.clearFilters();
+  }
+
+  /** Close the filter menu when clicking anywhere outside it. */
+  @HostListener('document:click', ['$event'])
+  protected onDocumentClick(event: MouseEvent): void {
+    if (!this.filterOpen()) return;
+    if (!(event.target as HTMLElement).closest('.filter')) {
+      this.filterOpen.set(false);
+    }
   }
 
   protected async saveProfile(): Promise<void> {

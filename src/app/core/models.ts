@@ -55,6 +55,7 @@ export interface OrderItem {
   slug: string;
   unitPriceCents: number;
   quantity: number;
+  category: string;
 }
 
 export interface Order {

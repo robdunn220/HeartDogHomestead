@@ -115,21 +115,100 @@
       <a class="btn" routerLink="/shop">Browse the catalog</a>
     </div>
   } @else {
-    <div class="order-search">
-      <label class="sr-only" for="order-search">Search your orders</label>
-      <input
-        id="order-search"
-        type="search"
-        placeholder="Search by order number, product, or date…"
-        autocomplete="off"
-        [ngModel]="orderSearch()"
-        (ngModelChange)="orderSearch.set($event)"
-      />
+    <div class="order-tools">
+      <div class="order-search">
+        <label class="sr-only" for="order-search">Search your orders</label>
+        <input
+          id="order-search"
+          type="search"
+          placeholder="Search by order number, product, or date…"
+          autocomplete="off"
+          [ngModel]="orderSearch()"
+          (ngModelChange)="orderSearch.set($event)"
+        />
+      </div>
+
+      <div class="filter">
+        <button
+          type="button"
+          class="btn btn-secondary filter-btn"
+          [class.active]="filterOpen()"
+          (click)="toggleFilter()"
+        >
+          Filter
+          @if (activeFilterCount() > 0) {
+            <span class="filter-badge">{{ activeFilterCount() }}</span>
+          }
+        </button>
+
+        @if (filterOpen()) {
+          <div class="filter-panel panel">
+            <div class="field">
+              <label for="filter-category">Seed type</label>
+              <select
+                id="filter-category"
+                [ngModel]="categoryFilter()"
+                (ngModelChange)="categoryFilter.set($event)"
+              >
+                <option value="all">All types</option>
+                @for (cat of availableCategories(); track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="filter-date">Date</label>
+              <select
+                id="filter-date"
+                [ngModel]="datePreset()"
+                (ngModelChange)="datePreset.set($event)"
+              >
+                <option value="any">Any time</option>
+                <option value="30d">Last 30 days</option>
+                <option value="3m">Last 3 months</option>
+                <option value="year">This year</option>
+                <option value="custom">Custom range…</option>
+              </select>
+            </div>
+
+            @if (datePreset() === 'custom') {
+              <div class="date-range">
+                <div class="field">
+                  <label for="date-from">From</label>
+                  <input
+                    id="date-from"
+                    type="date"
+                    [ngModel]="dateFrom()"
+                    (ngModelChange)="dateFrom.set($event)"
+                  />
+                </div>
+                <div class="field">
+                  <label for="date-to">To</label>
+                  <input
+                    id="date-to"
+                    type="date"
+                    [ngModel]="dateTo()"
+                    (ngModelChange)="dateTo.set($event)"
+                  />
+                </div>
+              </div>
+            }
+
+            @if (activeFilterCount() > 0) {
+              <button type="button" class="linklike clear-filters" (click)="clearFilters()">
+                Clear filters
+              </button>
+            }
+          </div>
+        }
+      </div>
     </div>
 
     @if (filteredOrders().length === 0) {
       <p class="muted no-matches">
-        No orders match “{{ orderSearch() }}”. <button type="button" class="linklike" (click)="orderSearch.set('')">Clear search</button>
+        No orders match your search and filters.
+        <button type="button" class="linklike" (click)="resetOrderView()">Clear all</button>
       </p>
     }
 
