@@ -115,8 +115,26 @@
       <a class="btn" routerLink="/shop">Browse the catalog</a>
     </div>
   } @else {
+    <div class="order-search">
+      <label class="sr-only" for="order-search">Search your orders</label>
+      <input
+        id="order-search"
+        type="search"
+        placeholder="Search by order number, product, or date…"
+        autocomplete="off"
+        [ngModel]="orderSearch()"
+        (ngModelChange)="orderSearch.set($event)"
+      />
+    </div>
+
+    @if (filteredOrders().length === 0) {
+      <p class="muted no-matches">
+        No orders match “{{ orderSearch() }}”. <button type="button" class="linklike" (click)="orderSearch.set('')">Clear search</button>
+      </p>
+    }
+
     <div class="orders">
-      @for (order of orders(); track order.reference) {
+      @for (order of filteredOrders(); track order.reference) {
         <article class="order card">
           <header class="order-head">
             <div>

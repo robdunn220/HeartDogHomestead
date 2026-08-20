@@ -26,6 +26,17 @@ export class Account {
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
 
+  // Order-history search — filtered client-side, since a customer's own orders
+  // are already loaded in full (reference, items, dates, totals).
+  protected readonly orderSearch = signal('');
+
+  protected readonly filteredOrders = computed(() => {
+    const term = this.orderSearch().trim().toLowerCase();
+    const orders = this.orders();
+    if (!term) return orders;
+    return orders.filter((order) => this.orderHaystack(order).includes(term));
+  });
+
   // Profile form. Seeded from the user the guard has already resolved.
   protected readonly name = signal(this.auth.user()?.name ?? '');
   protected readonly email = signal(this.auth.user()?.email ?? '');
@@ -86,6 +97,30 @@ export class Account {
 
   protected itemCount(order: Order): number {
     return order.items.reduce((sum, item) => sum + item.quantity, 0);
+  }
+
+  /**
+   * One lowercased string per order to match the search box against: order
+   * number, product names, status, total, and a few spellings of the date
+   * (ISO, "August 18, 2026", "Aug 18, 2026", "8/18/2026").
+   */
+  private orderHaystack(order: Order): string {
+    const created = new Date(order.createdAt);
+    const dates = [
+      order.createdAt.slice(0, 10),
+      created.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      created.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      created.toLocaleDateString('en-US'),
+    ];
+    return [
+      order.reference,
+      order.status,
+      formatMoney(order.totalCents),
+      ...order.items.map((item) => item.name),
+      ...dates,
+    ]
+      .join(' ')
+      .toLowerCase();
   }
 
   protected async saveProfile(): Promise<void> {
